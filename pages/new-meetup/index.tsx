@@ -1,9 +1,29 @@
 import NewMeetupForm, { TMeetupData } from "@/components/meetups/NewMeetupForm";
+import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function NewMeetupPage() {
-  function addMeetupHandler(enterMeetupData: TMeetupData) {
-    console.log(enterMeetupData);
+  const router = useRouter();
+
+  async function addMeetupHandler(enterMeetupData: TMeetupData) {
+    const response = await fetch("/api/new-meetup", {
+      method: "POST",
+      body: JSON.stringify(enterMeetupData),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await response.json();
+
+    router.push("/");
   }
 
-  return <NewMeetupForm onAddMeetup={addMeetupHandler} />;
+  return (
+    <>
+      <Head>
+        <title>Add a new meetup</title>
+        <meta name="description" content="Add your meetups" />
+      </Head>
+      <NewMeetupForm onAddMeetup={addMeetupHandler} />
+    </>
+  );
 }
